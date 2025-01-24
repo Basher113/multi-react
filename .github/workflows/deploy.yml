@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - run: docker login -u ${{ SECRET.DOCKER_USERNAME }} -p ${{ SECRET.DOCKER_PASSWORD }}
+    - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
     - run: docker build -t basher113/multi-client-dev -f ./client/Dockerfile.dev ./client
     - run: docker run -e CI=true basher113/multi-client-test npm test
     
