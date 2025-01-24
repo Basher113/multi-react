@@ -1,0 +1,31 @@
+name: Deploy MultiDocker
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - run: docker login -u ${{ SECRET.DOCKER_USERNAME }} -p ${{ SECRET.DOCKER_PASSWORD }}
+    - run: docker build -t basher113/multi-client-dev -f ./client/Dockerfile.dev ./client
+    - run: docker run -e CI=true basher113/multi-client-test npm test
+    
+    # build Production Dockerfiles
+    - run: docker build -t basher113/multi-client ./client
+    - run: docker build -t basher113/multi-server ./server
+    - run: docker build -t basher113/multi-worker ./worker
+    - run: docker build -t basher113/multi-nginx ./nginx
+
+    # Push the built Production Dockerfiles in Docker hub
+    - run: docker push basher113/multi-client
+    - run: docker push basher113/multi-server
+    - run: docker push basher113/multi-worker
+    - run: docker push basher113/multi-nginx
