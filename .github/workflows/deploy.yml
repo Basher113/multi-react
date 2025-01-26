@@ -29,3 +29,19 @@ jobs:
     - run: docker push basher113/multi-server
     - run: docker push basher113/multi-worker
     - run: docker push basher113/multi-nginx
+
+    - name: Generate deployment package from
+      run: zip -r deploy.zip frontend/ -x '*.git*'
+    
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v22
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: multi-docker
+        environment_name: Multi-docker-env
+        version_label: ${{github.sha}}
+        existing_bucket_name: elasticbeanstalk-ap-southeast-2-813984329763
+        region: ap-southeast-2
+        deployment_package: deploy.zip
+
