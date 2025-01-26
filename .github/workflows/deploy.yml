@@ -31,7 +31,7 @@ jobs:
     - run: docker push basher113/multi-nginx
 
     - name: Generate deployment package from
-      run: zip -r deploy.zip frontend/ -x '*.git*'
+      run: zip -r deploy.zip . -x '*.git*'
     
     - name: Deploy to EB
       uses: einaregilsson/beanstalk-deploy@v22
